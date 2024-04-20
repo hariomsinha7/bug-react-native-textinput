@@ -1,95 +1,112 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+/* eslint-disable react-native/no-inline-styles */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useState} from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [value, onChangeText] = React.useState(
+    'This is a prefilled text inside this TextInput. Add more contents and check the selection prop',
+  );
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const [selection, setSelection] = useState(
+    Platform.OS === 'android' ? {start: 0} : null,
+  );
+
+  const handleOnFocus = () => {
+    if (Platform.OS === 'android') {
+      setSelection(null);
+    }
   };
 
+  const handleOnBlur = () => {
+    if (Platform.OS === 'android') {
+      setSelection({start: 0});
+    }
+  };
+
+  /* We have used state variable to toggle the selection between {start:0} and 
+    'null'. When input is on focus, set the selection to 0 and when the input is blurred,
+    change the selection to null. 
+  
+    This works, when the input is being filled.
+
+    This exact scenario does not work when the TextInput is readOnly or have some
+    pre-filled data.
+
+    Note: This issue is only coming on Android.
+  */
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles?.container}>
+          <Text>{'Text Input with prefilled data'}</Text>
+          <TextInput
+            onChangeText={text => onChangeText(text)}
+            value={value}
+            style={{
+              padding: 10,
+              width: 300,
+              borderStartWidth: 1,
+              borderEndWidth: 1,
+              borderTopWidth: 1,
+              boderLeftWidth: 1,
+              borderRightWidth: 1,
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              borderRadius: 10,
+            }}
+            placeholder="Enter long text here..."
+            selection={selection}
+            onFocus={handleOnFocus}
+            onBlur={handleOnBlur}
+          />
+          <Text>{'Text Input with readOnly data'}</Text>
+          <TextInput
+            onChangeText={text => onChangeText(text)}
+            value={value}
+            readOnly
+            style={{
+              padding: 10,
+              width: 300,
+              borderStartWidth: 1,
+              borderEndWidth: 1,
+              borderTopWidth: 1,
+              boderLeftWidth: 1,
+              borderRightWidth: 1,
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              borderRadius: 10,
+              backgroundColor: '#f2f2f2',
+            }}
+            placeholder="Enter long text here..."
+            selection={selection}
+            onFocus={handleOnFocus}
+            onBlur={handleOnBlur}
+          />
+
+          <Text>{'Change input focus here'}</Text>
+          <TextInput
+            placeholder="Use this to change focus"
+            style={{
+              padding: 10,
+              width: 300,
+              borderStartWidth: 1,
+              borderEndWidth: 1,
+              borderTopWidth: 1,
+              boderLeftWidth: 1,
+              borderRightWidth: 1,
+              borderBottomWidth: 1,
+              borderRadius: 10,
+            }}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -97,21 +114,11 @@ function App(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContents: 'center',
+    height: 800,
   },
 });
 
